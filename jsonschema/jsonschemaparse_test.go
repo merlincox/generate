@@ -6,19 +6,19 @@ import (
 	"testing"
 )
 
-func TestThatAMissingSchemaKeyResultsInAnError(t *testing.T) {
-	invalid := `{
+func TestThatAMissingSchemaKeyResultsInAnErrorWithoutFlag(t *testing.T) {
+	invalidWithoutFlag := `{
         "title": "root"
     }`
 
-	_, invaliderr := Parse(invalid)
+	_, invaliderr := Parse(invalidWithoutFlag, false)
 
 	valid := `{
         "$schema": "http://json-schema.org/schema#",
         "title": "root"
     }`
 
-	_, validerr := Parse(valid)
+	_, validerr := Parse(valid, false)
 
 	if invaliderr == nil {
 		t.Error("When the $schema key is missing from the root, the JSON Schema is not valid")
@@ -29,12 +29,24 @@ func TestThatAMissingSchemaKeyResultsInAnError(t *testing.T) {
 	}
 }
 
+func TestThatAMissingSchemaKeyResultsInNoErrorWithFlag(t *testing.T) {
+	validWithFlag := `{
+        "title": "root"
+    }`
+
+	_, validerr := Parse(validWithFlag, true)
+
+	if validerr != nil {
+		t.Error("It should be possible to parse a simple JSON schema if the $schema key is not present but flag is set")
+	}
+}
+
 func TestThatTheRootSchemaCanBeParsed(t *testing.T) {
 	s := `{
         "$schema": "http://json-schema.org/schema#",
         "title": "root"
     }`
-	so, err := Parse(s)
+	so, err := Parse(s, false)
 
 	if err != nil {
 		t.Error("It should be possible to deserialize a simple schema, but received error ", err)
@@ -61,7 +73,7 @@ func TestThatPropertiesCanBeParsed(t *testing.T) {
             }
         }
     }`
-	so, err := Parse(s)
+	so, err := Parse(s, false)
 
 	if err != nil {
 		t.Error("It was not possible to deserialize the schema with references with error ", err)
@@ -121,7 +133,7 @@ func TestThatTypesCanBeExtracted(t *testing.T) {
             "address": { "$ref": "#/definitions/address" }
         }
     }`
-	so, err := Parse(s)
+	so, err := Parse(s, false)
 
 	if err != nil {
 		t.Error("failed to parse the test JSON: ", err)
@@ -172,7 +184,7 @@ func TestThatNestedTypesCanBeExtracted(t *testing.T) {
             }
         }
     }`
-	so, err := Parse(s)
+	so, err := Parse(s, false)
 
 	if err != nil {
 		t.Error("failed to parse the test JSON: ", err)
@@ -260,7 +272,7 @@ func TestThatAdditionalPropertiesCanBeExtracted(t *testing.T) {
             }
         }
     }`
-	so, err := Parse(s)
+	so, err := Parse(s, false)
 
 	if err != nil {
 		t.Error("failed to parse the test JSON: ", err)
@@ -327,7 +339,7 @@ func TestThatArraysAreSupported(t *testing.T) {
         }
     }`
 
-	so, err := Parse(s)
+	so, err := Parse(s, false)
 
 	if err != nil {
 		t.Error("failed to parse the test JSON: ", err)
@@ -408,7 +420,7 @@ func TestThatReferencesCanBeListed(t *testing.T) {
         "required": ["id", "name", "price"]
     }
 }`
-	so, err := Parse(s)
+	so, err := Parse(s, false)
 
 	if err != nil {
 		t.Error("failed to parse the test JSON: ", err)
@@ -448,7 +460,7 @@ func TestThatRequiredPropertiesAreIncludedInTheSchemaModel(t *testing.T) {
         }
     }
 }`
-	so, err := Parse(s)
+	so, err := Parse(s, false)
 
 	if err != nil {
 		t.Error("failed to parse the test JSON: ", err)
@@ -481,7 +493,7 @@ func TestThatPropertiesCanHaveMultipleTypes(t *testing.T) {
             }
         }
     }`
-	so, err := Parse(s)
+	so, err := Parse(s, false)
 
 	if err != nil {
 		t.Error("It was not possible to deserialize the schema with references with error ", err)
@@ -499,7 +511,7 @@ func TestThatPropertiesCanHaveMultipleTypes(t *testing.T) {
 
 func TestThatParsingInvalidValuesReturnsAnError(t *testing.T) {
 	s := `{ " }`
-	_, err := Parse(s)
+	_, err := Parse(s, false)
 
 	if err == nil {
 		t.Error("expected a parsing error, but got nil")
