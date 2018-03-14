@@ -31,8 +31,6 @@ func main() {
 
 	flag.Parse()
 
-	fmt.Printf("NSK = %v\n", *nsk)
-
 	inputFiles := flag.Args()
 	if *i != "" {
 		inputFiles = append(inputFiles, *i)
