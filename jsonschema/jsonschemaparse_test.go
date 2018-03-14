@@ -6,38 +6,38 @@ import (
 	"testing"
 )
 
-func TestThatAMissingSchemaKeyResultsInAnErrorWithoutFlag(t *testing.T) {
+func TestThatAMissingSchemaKeyResultsInAnErrorDependingOnNSKFlag(t *testing.T) {
 	invalidWithoutFlag := `{
         "title": "root"
     }`
-
-	_, invaliderr := Parse(invalidWithoutFlag, false)
 
 	valid := `{
         "$schema": "http://json-schema.org/schema#",
         "title": "root"
     }`
 
-	_, validerr := Parse(valid, false)
+	_, err1 := Parse(invalidWithoutFlag, false)
 
-	if invaliderr == nil {
-		t.Error("When the $schema key is missing from the root, the JSON Schema is not valid")
+	_, err2 := Parse(valid, false)
+
+	_, err3 := Parse(invalidWithoutFlag, true)
+
+	_, err4 := Parse(valid, true)
+
+	if err1 == nil {
+		t.Error("When the $schema key is missing from the root, the JSON Schema is not valid if nsk flag is not set to true ")
 	}
 
-	if validerr != nil {
+	if err2 != nil {
 		t.Error("It should be possible to parse a simple JSON schema if the $schema key is present")
 	}
-}
 
-func TestThatAMissingSchemaKeyResultsInNoErrorWithFlag(t *testing.T) {
-	validWithFlag := `{
-        "title": "root"
-    }`
+	if err3 != nil {
+		t.Error("It should be possible to parse a simple JSON schema if the $schema key is not present but nsk flag is set")
+	}
 
-	_, validerr := Parse(validWithFlag, true)
-
-	if validerr != nil {
-		t.Error("It should be possible to parse a simple JSON schema if the $schema key is not present but flag is set")
+	if err4 != nil {
+		t.Error("It should be possible to parse a simple JSON schema if the $schema key is present and nsk flag is set")
 	}
 }
 
