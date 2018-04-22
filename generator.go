@@ -10,7 +10,7 @@ import (
 
 	"errors"
 
-	"github.com/a-h/generate/jsonschema"
+	"projects/generate/jsonschema"
 )
 
 // Generator will produce structs from the JSON schema.

@@ -2,7 +2,7 @@
 
 set -euo pipefail
 
-output_dir=/usr/local/bin
+output_dir=$GOPATH/bin
 output_exe=schema-generator
 
 # Simple example build script
