@@ -10,7 +10,7 @@ import (
 
 	"errors"
 
-	"projects/generate/jsonschema"
+	"github.com/merlincox/generate/jsonschema"
 )
 
 // Generator will produce structs from the JSON schema.

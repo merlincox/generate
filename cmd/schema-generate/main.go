@@ -10,8 +10,8 @@ import (
 
 	"encoding/json"
 
-	"projects/generate"
-	"projects/generate/jsonschema"
+	"github.com/merlincox/generate"
+	"github.com/merlincox/generate/jsonschema"
 )
 
 var (
